@@ -12,7 +12,6 @@ import com.goodee.mvcboard.service.BoardService;
 
 import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 @CrossOrigin
 @RestController
 public class BoardRest {
