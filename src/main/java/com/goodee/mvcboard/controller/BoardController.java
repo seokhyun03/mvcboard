@@ -39,8 +39,11 @@ public class BoardController {
 	}
 	
 	@GetMapping("/board/modifyBoard")
-	public String modifyBoard(Model model, Board board) {
+	public String modifyBoard(Model model, Board board, @RequestParam(name="boardfileNo", defaultValue = "0") int boardfileNo) {
 		List<Map<String, Object>> localNameList = boardService.getLocalNameList();
+		if(boardfileNo>0) {
+			boardService.removeBordfileOne(boardfileNo);
+		}
 		List<Boardfile> fileList = boardService.getBoardfile(board.getBoardNo());
 		
 		model.addAttribute("localNameList", localNameList);
@@ -58,12 +61,6 @@ public class BoardController {
 			log.debug("\u001B[44m게시물 수정 실패\u001B[0m");
 		}
 		return "redirect:/board/boardOne?boardNo="+board.getBoardNo();
-	}
-	
-	@GetMapping("/board/modifyBoard/deleteBoardfileOne")
-	public String deleteBoardfileOne(Board board, int boardfileNo) throws UnsupportedEncodingException {
-		boardService.removeBordfileOne(boardfileNo);
-		return "redirect:/board/modifyBoard?memberId="+board.getMemberId()+"&localName="+URLEncoder.encode(board.getLocalName(),"UTF-8")+"&boardNo="+board.getBoardNo()+"&boardTitle="+URLEncoder.encode(board.getBoardTitle(),"UTF-8")+"&boardContent="+URLEncoder.encode(board.getBoardContent(),"UTF-8");
 	}
 	
 	@GetMapping("/board/addBoard")

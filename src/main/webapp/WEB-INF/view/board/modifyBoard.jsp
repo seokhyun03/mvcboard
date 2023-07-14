@@ -68,7 +68,7 @@
 				<div>
 					현재 업로드된 파일<br>
 					<c:forEach var="f" items="${fileList}">
-							${f.originFilename}&nbsp;<a href="/board/modifyBoard/deleteBoardfileOne?memberId=${board.memberId}&localName=${board.localName}&boardNo=${board.boardNo}&boardTitle=${board.boardTitle}&boardContent=${board.boardContent}&boardfileNo=${f.boardfileNo}">삭제</a><br>
+							${f.originFilename}&nbsp;<a href="/board/modifyBoard?memberId=${board.memberId}&localName=${board.localName}&boardNo=${board.boardNo}&boardTitle=${board.boardTitle}&boardContent=${board.boardContent}&boardfileNo=${f.boardfileNo}">삭제</a><br>
 					</c:forEach>
 				</div>
 					<button type="button" id="addfile">추가</button>
