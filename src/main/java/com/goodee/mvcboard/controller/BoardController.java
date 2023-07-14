@@ -41,6 +41,7 @@ public class BoardController {
 	@GetMapping("/board/modifyBoard")
 	public String modifyBoard(Model model, Board board, @RequestParam(name="boardfileNo", defaultValue = "0") int boardfileNo) {
 		List<Map<String, Object>> localNameList = boardService.getLocalNameList();
+		// 파일 번호를 받으면 삭제
 		if(boardfileNo>0) {
 			boardService.removeBordfileOne(boardfileNo);
 		}
