@@ -30,7 +30,7 @@
 	<div>
 		<a href="/board/boardOne?boardNo=${board.boardNo}">이전</a>
 	</div>
-	<form action="/board/modifyBoard" method="post">
+	<form action="/board/modifyBoard" method="post" enctype="multipart/form-data">
 		<table border="1">
 			<tr>
 				<th>memberId</th>
@@ -41,10 +41,10 @@
 				<td>
 					<select name="localName">
 						<c:forEach var="l" items="${localNameList}">
-							<c:if test="${l.localName == board.memberId}">
+							<c:if test="${l.localName == board.localName}">
 								<option value="${l.localName}" selected="selected">${l.localName}</option>
 							</c:if>
-							<c:if test="${l.localName != board.memberId}">
+							<c:if test="${l.localName != board.localName}">
 								<option value="${l.localName}">${l.localName}</option>
 							</c:if>
 						</c:forEach>
@@ -66,15 +66,14 @@
 				<th>boardfiles</th>
 				<td>
 				<div>
-					현재 업로드된 파일
+					현재 업로드된 파일<br>
 					<c:forEach var="f" items="${fileList}">
-							${f.originFilename}&nbsp;<button type="submit" formaction="/board/modifyBoard/deleteBoardfileOne">삭제</button><br>
+							${f.originFilename}&nbsp;<a href="/board/modifyBoard/deleteBoardfileOne?memberId=${board.memberId}&localName=${board.localName}&boardNo=${board.boardNo}&boardTitle=${board.boardTitle}&boardContent=${board.boardContent}&boardfileNo=${f.boardfileNo}">삭제</a><br>
 					</c:forEach>
 				</div>
 					<button type="button" id="addfile">추가</button>
 					<button type="button" id="delfile">삭제</button>
 					<div id="files">
-						<input type="file" name="multipartFile" class="boardfiles">
 					</div>
 				</td>
 			</tr>

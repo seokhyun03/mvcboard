@@ -49,12 +49,49 @@ public class BoardService {
 		return row;
 	}
 	
-	public int removeBordfileOne(Boardfile boardfile) {
-		return boardfileMapper.deleteBoardfileOne(boardfile.getBoardNo());
+	public int removeBordfileOne(int boardfileNo) {
+		return boardfileMapper.deleteBoardfileOne(boardfileNo);
 	}
 	
-	public int modifyBoard(Board board) {
+	public int modifyBoard(Board board, String path) {
 		int row = boardMapper.updateBoard(board);
+		// board 수정 성공
+		if(row == 1) {
+			int boardNo = board.getBoardNo();
+			List<MultipartFile> fileList = board.getMultipartFile();	
+			log.debug(BLUE + fileList.size() + RESET);
+			// 첨부된 파일이 한개 이상 일 때
+			if(fileList != null && fileList.size() > 0) {
+				for(MultipartFile mf : fileList) {
+					if(mf.getSize() > 0) {
+						// 확장자
+						String ext = mf.getOriginalFilename().substring(mf.getOriginalFilename().lastIndexOf("."));
+						// 저장시 사용할 파일 이름
+						String saveFilename = UUID.randomUUID().toString().replace("-", "") + ext;
+						
+						Boardfile bf = new Boardfile();
+						bf.setBoardNo(boardNo);	// 부모 키 값
+						bf.setOriginFilename(mf.getOriginalFilename());	// 원본파일이름
+						bf.setSaveFilename(saveFilename);	// 저장파일이름
+						bf.setFiletype(mf.getContentType());	// 파일 타입(MIME)
+						bf.setFilesize(mf.getSize());	// 파일 사이즈
+						// boardfile 테이블에 데이터 저장
+						boardfileMapper.insertBoardfile(bf);
+						// 파일 저장
+						// path위치에 저장파일이름으로 빈파일을 생성
+						File f = new File(path+bf.getSaveFilename());
+						// 빈파일에 첨부된파일의 스트림을 주입한다
+						try {
+							mf.transferTo(f);
+						} catch (IllegalStateException | IOException e) {
+							e.printStackTrace();
+							// 트랜잭션 작동을 위해 예외(try/catch를 강요하지 않는 예외: RuntimeException) 발생이 필요
+							throw new RuntimeException();
+						}
+					}
+				}
+			}
+		}
 		return boardMapper.updateBoard(board);
 	}
 	

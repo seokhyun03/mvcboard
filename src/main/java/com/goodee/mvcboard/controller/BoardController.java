@@ -1,5 +1,7 @@
 package com.goodee.mvcboard.controller;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.List;
 import java.util.Map;
 
@@ -47,21 +49,21 @@ public class BoardController {
 	}
 	
 	@PostMapping("board/modifyBoard")
-	public String modifyBoard(Board board) {
-		int row = boardService.modifyBoard(board);
+	public String modifyBoard(HttpServletRequest request, Board board) {
+		String path = request.getServletContext().getRealPath("/upload/");
+		int row = boardService.modifyBoard(board, path);
 		if(row == 1) {
 			log.debug("\u001B[44m게시물 수정 성공\u001B[0m");
 		} else {
 			log.debug("\u001B[44m게시물 수정 실패\u001B[0m");
 		}
-		return "redirect:board/boardOne?boardNo="+board.getBoardNo();
+		return "redirect:/board/boardOne?boardNo="+board.getBoardNo();
 	}
 	
 	@GetMapping("/board/modifyBoard/deleteBoardfileOne")
-	public String deleteBoardfileOne(Board board, int boardfileNo) {
-		
-		
-		return "redirect:board/modifyBoard?memberId="+board.getMemberId()+"&localName="+board.getLocalName()+"&boardNo="+board.getLocalName()+"&boardTitle="+board.getBoardNo()+"&boardContent="+board.getBoardContent();
+	public String deleteBoardfileOne(Board board, int boardfileNo) throws UnsupportedEncodingException {
+		boardService.removeBordfileOne(boardfileNo);
+		return "redirect:/board/modifyBoard?memberId="+board.getMemberId()+"&localName="+URLEncoder.encode(board.getLocalName(),"UTF-8")+"&boardNo="+board.getBoardNo()+"&boardTitle="+URLEncoder.encode(board.getBoardTitle(),"UTF-8")+"&boardContent="+URLEncoder.encode(board.getBoardContent(),"UTF-8");
 	}
 	
 	@GetMapping("/board/addBoard")
